@@ -21,6 +21,7 @@
                 var onDragEnd = $parse($attributes.onDragEnd);
                 var axis = $attributes.axis || false;
                 var excludedClasses = $attributes.dragScrollExcludedClasses ? $attributes.dragScrollExcludedClasses.split(',') : [];
+                var parentClassLevel = $attributes.parentClassLevel ? $attributes.parentClassLevel : 0;
                 var startClientX;
                 var startClientY;
                 var lastClientX;
@@ -58,9 +59,20 @@
                  */
                 function handleMouseDown (e) {
                     if(enabled){
-                        for (var i= 0; i<excludedClasses.length; i++) {
-                            if (angular.element(e.target).hasClass(excludedClasses[i])) {
+                        var jqTarget = angular.element(e.target);
+                        for(var i = 0; i<excludedClasses.length; i++) {
+                            if (jqTarget.hasClass(excludedClasses[i])) {
                                 return false;
+                            }
+                        }
+                        if(parentClassLevel){
+                            for(var j = 1; j <= parentClassLevel; j++){
+                                jqTarget = jqTarget.parent();
+                                for(var i = 0; i<excludedClasses.length; i++) {
+                                    if (jqTarget.hasClass(excludedClasses[i])) {
+                                        return false;
+                                    }
+                                }
                             }
                         }
 
